@@ -84,9 +84,6 @@ export default function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.form}>
-        <Text style={styles.formTitle}>
-          {task ? 'Edit Task' : 'Add New Task'}
-        </Text>
 
         <View style={styles.inputGroup}>
           <Text style={GlobalStyles.label}>Task Title *</Text>

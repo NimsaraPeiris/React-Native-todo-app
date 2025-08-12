@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
@@ -17,6 +17,10 @@ export default function AddTaskScreen() {
   useEffect(() => {
     loadProfile();
   }, []);
+
+  const handleBack = () => {
+    router.back();
+  };
 
   const loadProfile = async () => {
     try {
@@ -66,9 +70,7 @@ export default function AddTaskScreen() {
           <ArrowLeft size={24} color={Colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Add New Task</Text>
-        <Text style={styles.headerSubtitle}>
-          Create a new task to stay organized
-        </Text>
+        <View style={styles.rightPlaceholder} />
       </View>
       
       <TaskForm onSave={handleSave} onCancel={handleCancel} />
@@ -78,37 +80,28 @@ export default function AddTaskScreen() {
 
 const styles = StyleSheet.create({
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    height: Platform.OS === 'ios' ? 44 : 56,
     backgroundColor: Colors.white,
-    padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: Colors.gray200,
-    position: 'relative',
   },
 
   backButton: {
-    position: 'absolute',
-    left: 16,
-    top: 16,
-    zIndex: 1,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.gray100,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 8,
+    marginLeft: -8,
   },
 
   headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
     color: Colors.textPrimary,
-    marginBottom: 4,
-    textAlign: 'center',
   },
 
-  headerSubtitle: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    textAlign: 'center',
+  rightPlaceholder: {
+    width: 40,
   },
 });

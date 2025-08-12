@@ -9,7 +9,8 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { User, Camera, Save, ArrowLeft } from 'lucide-react-native';
+import { User, Camera, Save, ArrowLeft, Upload } from 'lucide-react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { Profile } from '@/types/Task';
 import { Colors } from '@/constants/Colors';
 import { GlobalStyles } from '@/constants/Styles';
@@ -26,7 +27,6 @@ export default function ProfileForm({ profile, onSave, onCancel }: ProfileFormPr
   const [imageUrl, setImageUrl] = useState('');
   const [firstNameFocused, setFirstNameFocused] = useState(false);
   const [lastNameFocused, setLastNameFocused] = useState(false);
-  const [imageUrlFocused, setImageUrlFocused] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -35,6 +35,32 @@ export default function ProfileForm({ profile, onSave, onCancel }: ProfileFormPr
       setImageUrl(profile.imageUrl);
     }
   }, [profile]);
+
+  const pickImage = async () => {
+    try {
+      // Request permission
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to upload images.');
+        return;
+      }
+
+      // Launch image picker
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+
+      if (!result.canceled) {
+        setImageUrl(result.assets[0].uri);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to pick image');
+      console.error('Error picking image:', error);
+    }
+  };
 
   const handleSave = () => {
     if (!firstName.trim() || !lastName.trim()) {
@@ -66,16 +92,17 @@ export default function ProfileForm({ profile, onSave, onCancel }: ProfileFormPr
         <Text style={styles.formTitle}>Profile Information</Text>
 
         <View style={styles.imageContainer}>
-          <View style={styles.imageWrapper}>
+          <TouchableOpacity style={styles.imageWrapper} onPress={pickImage}>
             <Image
               source={{ uri: imageUrl || defaultImageUrl }}
               style={styles.profileImage}
               defaultSource={{ uri: defaultImageUrl }}
             />
             <View style={styles.imageOverlay}>
-              <Camera size={24} color={Colors.white} />
+              <Upload size={24} color={Colors.white} />
+              <Text style={styles.uploadText}>Upload Photo</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.inputGroup}>
@@ -105,23 +132,6 @@ export default function ProfileForm({ profile, onSave, onCancel }: ProfileFormPr
             placeholder="Enter your last name"
             onFocus={() => setLastNameFocused(true)}
             onBlur={() => setLastNameFocused(false)}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={GlobalStyles.label}>Profile Image URL</Text>
-          <TextInput
-            style={[
-              GlobalStyles.input,
-              imageUrlFocused && GlobalStyles.inputFocused,
-            ]}
-            value={imageUrl}
-            onChangeText={setImageUrl}
-            placeholder="Enter image URL (optional)"
-            onFocus={() => setImageUrlFocused(true)}
-            onBlur={() => setImageUrlFocused(false)}
-            autoCapitalize="none"
-            keyboardType="url"
           />
         </View>
 
@@ -175,27 +185,34 @@ const styles = StyleSheet.create({
 
   imageWrapper: {
     position: 'relative',
-  },
-
-  profileImage: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: Colors.gray200,
+    overflow: 'hidden',
+    backgroundColor: Colors.gray100,
+  },
+
+  profileImage: {
+    width: '100%',
+    height: '100%',
   },
 
   imageOverlay: {
     position: 'absolute',
     bottom: 0,
+    left: 0,
     right: 0,
-    backgroundColor: Colors.primary,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    height: 48,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: Colors.white,
+  },
+
+  uploadText: {
+    color: Colors.white,
+    fontSize: 12,
+    marginTop: 4,
+    fontWeight: '500',
   },
 
   inputGroup: {
