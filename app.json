@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "bolt-expo-nativewind",
+    "name": "TaskFlow",
     "slug": "bolt-expo-nativewind",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -32,6 +32,7 @@
     },
     "android": {
       "package": "com.nimsarapeiris1234.boltexponativewind"
-    }
+    },
+    "owner": "nimsarapeiris1234"
   }
 }
