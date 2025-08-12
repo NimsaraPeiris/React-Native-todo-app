@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SquareCheck as CheckSquare, Clock, Users, TrendingUp } from 'lucide-react-native';
@@ -56,8 +57,14 @@ export default function ProfileScreen() {
       await StorageService.saveProfile(profileData);
       setProfile(profileData);
       setIsEditing(false);
+      Alert.alert(
+        'Success',
+        'Profile saved successfully!',
+        [{ text: 'OK' }]
+      );
     } catch (error) {
       console.error('Error saving profile:', error);
+      Alert.alert('Error', 'Failed to save profile. Please try again.');
     }
   };
 
@@ -71,7 +78,11 @@ export default function ProfileScreen() {
             {profile ? 'Edit Profile' : 'Setup Profile'}
           </Text>
         </View>
-        <ProfileForm profile={profile} onSave={handleSaveProfile} />
+        <ProfileForm 
+          profile={profile} 
+          onSave={handleSaveProfile}
+          onCancel={() => setIsEditing(false)}
+        />
       </SafeAreaView>
     );
   }

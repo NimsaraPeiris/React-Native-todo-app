@@ -6,10 +6,12 @@ import {
   StyleSheet,
   RefreshControl,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SquareCheck as CheckSquare, Calendar } from 'lucide-react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import TaskCard from '@/components/TaskCard';
 import { Task } from '@/types/Task';
 import { StorageService } from '@/utils/storage';
@@ -17,6 +19,7 @@ import { Colors } from '@/constants/Colors';
 import { GlobalStyles } from '@/constants/Styles';
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -50,9 +53,15 @@ export default function HomeScreen() {
       if (task) {
         await StorageService.updateTask(taskId, { completed: !task.completed });
         await loadTasks();
+        Alert.alert(
+          'Success',
+          `Task ${task.completed ? 'marked as pending' : 'completed'}!`,
+          [{ text: 'OK' }]
+        );
       }
     } catch (error) {
       console.error('Error toggling task completion:', error);
+      Alert.alert('Error', 'Failed to update task. Please try again.');
     }
   };
 
@@ -60,15 +69,19 @@ export default function HomeScreen() {
     try {
       await StorageService.deleteTask(taskId);
       await loadTasks();
+      Alert.alert(
+        'Success',
+        'Task deleted successfully!',
+        [{ text: 'OK' }]
+      );
     } catch (error) {
       console.error('Error deleting task:', error);
+      Alert.alert('Error', 'Failed to delete task. Please try again.');
     }
   };
 
   const handleEdit = (task: Task) => {
-    // Navigation to edit would be implemented here
-    // For now, we'll show an alert
-    console.log('Edit task:', task);
+    router.push(`/edit-task/${task.id}`);
   };
 
   useFocusEffect(

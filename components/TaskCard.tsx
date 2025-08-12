@@ -20,7 +20,11 @@ export default function TaskCard({ task, onEdit, onDelete, onToggleComplete }: T
       'Are you sure you want to delete this task?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => onDelete(task.id) },
+        { 
+          text: 'Delete', 
+          style: 'destructive', 
+          onPress: () => onDelete(task.id)
+        },
       ]
     );
   };

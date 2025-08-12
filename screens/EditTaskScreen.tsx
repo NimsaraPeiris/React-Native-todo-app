@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ArrowLeft } from 'lucide-react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import TaskForm from '@/components/TaskForm';
 import { Task, Profile } from '@/types/Task';
@@ -57,7 +58,7 @@ export default function EditTaskScreen() {
         [
           {
             text: 'OK',
-            onPress: () => router.back(),
+            onPress: () => router.replace('/(tabs)'),
           },
         ]
       );
@@ -68,7 +69,7 @@ export default function EditTaskScreen() {
   };
 
   const handleCancel = () => {
-    router.back();
+    router.replace('/(tabs)');
   };
 
   if (!task) {
@@ -82,6 +83,9 @@ export default function EditTaskScreen() {
   return (
     <SafeAreaView style={GlobalStyles.container}>
       <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={handleCancel}>
+          <ArrowLeft size={24} color={Colors.textPrimary} />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Edit Task</Text>
         <Text style={styles.headerSubtitle}>
           Update your task details
@@ -99,6 +103,20 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: Colors.gray200,
+    position: 'relative',
+  },
+
+  backButton: {
+    position: 'absolute',
+    left: 16,
+    top: 16,
+    zIndex: 1,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.gray100,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   headerTitle: {
@@ -106,11 +124,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.textPrimary,
     marginBottom: 4,
+    textAlign: 'center',
   },
 
   headerSubtitle: {
     fontSize: 14,
     color: Colors.textSecondary,
+    textAlign: 'center',
   },
 
   loadingContainer: {

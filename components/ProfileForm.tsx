@@ -9,7 +9,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { User, Camera, Save } from 'lucide-react-native';
+import { User, Camera, Save, ArrowLeft } from 'lucide-react-native';
 import { Profile } from '@/types/Task';
 import { Colors } from '@/constants/Colors';
 import { GlobalStyles } from '@/constants/Styles';
@@ -17,9 +17,10 @@ import { GlobalStyles } from '@/constants/Styles';
 interface ProfileFormProps {
   profile: Profile | null;
   onSave: (profile: Profile) => void;
+  onCancel?: () => void;
 }
 
-export default function ProfileForm({ profile, onSave }: ProfileFormProps) {
+export default function ProfileForm({ profile, onSave, onCancel }: ProfileFormProps) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -54,6 +55,13 @@ export default function ProfileForm({ profile, onSave }: ProfileFormProps) {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {onCancel && (
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton} onPress={onCancel}>
+            <ArrowLeft size={24} color={Colors.textPrimary} />
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={styles.form}>
         <Text style={styles.formTitle}>Profile Information</Text>
 
@@ -132,6 +140,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+  },
+
+  header: {
+    padding: 16,
+    paddingBottom: 0,
+  },
+
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.gray100,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   form: {
